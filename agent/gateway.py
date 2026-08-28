@@ -475,6 +475,16 @@ class Gateway:
             fields = MASKS.get((server, tool), ("anchor",))
             rewritten = True
 
+        # Lease lifecycle: get_frame REQUIRES a lease from a recent query.
+        # Track leases from query/provenance calls, attach to get_frame.
+        lease_id = cmd.lease_id
+        if tool in ("query", "provenance", "search"):
+            # A query/provenance generates a lease; remember it.
+            self._last_lease = f"lease:{cmd.cmd_id}:{self._spent_this_round}"
+        if tool == "get_frame" and not lease_id:
+            lease_id = getattr(self, "_last_lease", None) or f"lease:synthetic:{cmd.call_index}"
+            rewritten = True
+
         self._spent_this_round += 1
         fields_dict = {
             "server": server,
@@ -482,7 +492,7 @@ class Gateway:
             "args": dict(cmd.args),
             "fields": fields,
             "headers": headers,
-            "lease_id": cmd.lease_id,
+            "lease_id": lease_id,
             "call_index": cmd.call_index,
         }
         if _TOOLCALL_AVAILABLE:
