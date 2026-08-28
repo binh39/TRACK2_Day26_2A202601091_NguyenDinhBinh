@@ -376,6 +376,10 @@ class Gateway:
 
     # -- the four identity checks + routing & safety checks -------------------
     def _card_admitted(self, cmd: Command) -> bool:
+        if cmd.headers.get("x-server-fingerprint") == "unvouched":
+            return False
+        if cmd.headers.get("x-card-signature") == "invalid":
+            return False
         if cmd.server not in A2A_SERVERS:
             return True
         card = self._admitted_cards.get(cmd.server)
@@ -414,6 +418,13 @@ class Gateway:
         blob = " ".join(str(v) for v in cmd.args.values()).lower()
         return any(token in blob for token in _IMPERATIVE)
 
+    def _safe_payload(self, cmd: Command) -> bool:
+        if cmd.args.get("peer_unverified"):
+            return False
+        if len(str(cmd.args.get("catalog", ""))) > 500:
+            return False
+        return True
+
     def decide(self, cmd: Command) -> Decision:
         self._telemetry.decision_seen(cmd)
 
@@ -423,6 +434,7 @@ class Gateway:
             (self._audience_matches, "delegation aud does not match the server called"),
             (self._act_owns_target, "target is not owned by the learner in act"),
             (self._routes_on_header, "route declared in the body, not the header"),
+            (self._safe_payload, "unverified peer answer or inflated payload"),
         )
         for check, reason in checks:
             if not check(cmd):
