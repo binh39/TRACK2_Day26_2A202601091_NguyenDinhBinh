@@ -7,3 +7,5 @@ runs/
 kit/world/*/
 !kit/world/*.py
 *.local.json
+.env
+implementation_plan.md
