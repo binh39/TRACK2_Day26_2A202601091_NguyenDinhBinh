@@ -394,7 +394,7 @@ class Gateway:
     def _audience_matches(self, cmd: Command) -> bool:
         aud = cmd.headers.get("aud") or cmd.headers.get("Aud")
         if aud is not None:
-            return aud in (cmd.server, f"mcp:{cmd.server}", f"a2a:{cmd.server}")
+            return aud == cmd.server
         return True
 
     def _routes_on_header(self, cmd: Command) -> bool:

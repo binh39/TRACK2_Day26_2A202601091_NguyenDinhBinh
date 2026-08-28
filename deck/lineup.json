@@ -1,16 +1,16 @@
-{
- "version": 1,
- "team": "team-binh39",
- "order": [
-  "atk_01",
-  "atk_04",
-  "atk_07",
-  "atk_03",
-  "atk_05",
-  "atk_10",
-  "atk_08",
-  "atk_09",
-  "atk_02",
-  "atk_06"
- ]
-}
+ {
+  "version": 1,
+  "team": "team-binh39",
+  "order": [
+   "atk_01",
+   "atk_07",
+   "atk_03",
+   "atk_04",
+   "atk_10",
+   "atk_05",
+   "atk_08",
+   "atk_09",
+   "atk_02",
+   "atk_06"
+  ]
+ }

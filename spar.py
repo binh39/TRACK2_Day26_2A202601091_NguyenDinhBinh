@@ -47,7 +47,7 @@ sys.path.insert(0, str(HERE))
 from kit.mcp.mutations import MutableStack, trigger_matches  # noqa: E402
 from kit.referee.rubric import DETERMINISTIC, family_of, weight_of  # noqa: E402
 
-BOTS = ("rookie", "operator", "adversary")
+BOTS = ("rookie", "operator", "adversary", "duybot", "DuyBot")
 ROLES = ("defender", "attacker", "prosecutor", "all")
 START_HP = 100
 CREDITS = 100
@@ -69,6 +69,8 @@ def _load_world():
 
 def _load_side(module_root: str):
     """Return (Gateway, prosecute, deck, lineup) for `agent`/`eval` or a bot package."""
+    if module_root.lower() == "duybot":
+        module_root = "duybot"
     if module_root == "you":
         gw = importlib.import_module("agent.gateway").Gateway
         pr = importlib.import_module("eval.prosecute").prosecute
